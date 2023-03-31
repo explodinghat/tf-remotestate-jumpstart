@@ -1,9 +1,13 @@
+provider "azurerm" {
+  features {}
+}
+
 # Generate a random storage name
 resource "random_string" "tf-name" {
-  length = 8
-  upper = false
-  number = true
+  length = 5
   lower = true
+  upper = false
+  numeric = true
   special = false
 }
 # Create a Resource Group for the Terraform State File
@@ -21,7 +25,7 @@ resource "azurerm_resource_group" "state-rg" {
 # Create a Storage Account for the Terraform State File
 resource "azurerm_storage_account" "state-sta" {
   depends_on = [azurerm_resource_group.state-rg]
-  name = "${lower(var.company)}tf${random_string.tf-name.result}"
+  name = "${var.storage-acc-name}${random_string.tf-name.result}"
   resource_group_name = azurerm_resource_group.state-rg.name
   location = azurerm_resource_group.state-rg.location
   account_kind = "StorageV2"
@@ -31,7 +35,7 @@ resource "azurerm_storage_account" "state-sta" {
   enable_https_traffic_only = true
    
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
   tags = {
     environment = var.environment
