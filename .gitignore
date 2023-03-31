@@ -20,3 +20,5 @@
 # Certs and keys
 **/*.pem
 **/*.srl
+
+sensitive-variables.txt
